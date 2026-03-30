@@ -83,6 +83,21 @@ async fn cmd_deploy(
         anyhow::bail!("Path '{}' does not exist. Check the folder name and try again.", source);
     }
 
+    // Use folder name as app name if default is used
+    let name = if name == "koda-app" {
+        std::fs::canonicalize(&source)
+            .unwrap_or_else(|_| std::path::PathBuf::from(&source))
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("koda-app")
+            .chars()
+            .map(|c| if c.is_alphanumeric() || c == '-' { c } else { '-' })
+            .collect::<String>()
+            .to_lowercase()
+    } else {
+        name
+    };
+
     println!("Compressing {}...", source);
     let tarball_path = std::env::temp_dir().join("koda-deploy.tar.gz");
     create_tarball(&source, tarball_path.to_str().unwrap())?;
