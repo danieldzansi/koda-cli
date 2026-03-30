@@ -48,7 +48,7 @@ pub async fn handle_login(email: String) -> Result<()> {
     let final_token = token.unwrap();
     save_config(&final_token, &api_url)?;
 
-    println!("\nLogin successful! Token saved to ~/.railway-rs/config.json");
+    println!("\nLogin successful! Token saved to ~/.koda/config.json");
     Ok(())
 }
 
@@ -66,7 +66,7 @@ pub fn load_api_url() -> String {
 
 fn load_config_file() -> anyhow::Result<serde_json::Value> {
     let mut path = dirs::home_dir().expect("Could not find home directory");
-    path.push(".railway-rs");
+    path.push(".koda");
     path.push("config.json");
     let content = std::fs::read_to_string(path)?;
     Ok(serde_json::from_str(&content)?)
@@ -74,7 +74,7 @@ fn load_config_file() -> anyhow::Result<serde_json::Value> {
 
 fn save_config(token: &str, api_url: &str) -> anyhow::Result<()> {
     let mut path = dirs::home_dir().expect("Could not find home directory");
-    path.push(".railway-rs");
+    path.push(".koda");
     fs::create_dir_all(&path)?;
     path.push("config.json");
 

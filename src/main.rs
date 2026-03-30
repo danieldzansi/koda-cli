@@ -17,7 +17,7 @@ enum Commands {
         source: String,
         #[arg(short, long)]
         port: Option<u16>,
-        #[arg(short = 'n', long, default_value = "railway-app")]
+        #[arg(short = 'n', long, default_value = "koda-app")]
         name: String,
         #[arg(short, long)]
         env: Vec<String>,
@@ -54,7 +54,7 @@ async fn main() -> Result<()> {
 
 fn load_token() -> Result<String> {
     let mut path = dirs::home_dir().expect("Could not find home directory");
-    path.push(".railway-rs");
+    path.push(".koda");
     path.push("config.json");
 
     let content = std::fs::read_to_string(&path)
@@ -79,11 +79,15 @@ async fn cmd_deploy(
     let api_url = load_api_url();
     let token = load_token()?;
 
+    if !std::path::Path::new(&source).exists() {
+        anyhow::bail!("Path '{}' does not exist. Check the folder name and try again.", source);
+    }
+
     println!("Compressing {}...", source);
-    let tarball_path = "/tmp/railway-deploy.tar.gz";
+    let tarball_path = "/tmp/koda-deploy.tar.gz";
     create_tarball(&source, tarball_path)?;
 
-    println!("Uploading to Railway...");
+    println!("Uploading to Koda...");
     let tarball_bytes = std::fs::read(tarball_path)?;
 
     let client = reqwest::Client::new();
@@ -108,7 +112,7 @@ async fn cmd_deploy(
         .await?;
 
     let body: serde_json::Value = res.json().await?;
-    
+
     if let Some(url) = body["url"].as_str() {
         println!("\nDeployed successfully!");
         println!("URL: {}", url);
