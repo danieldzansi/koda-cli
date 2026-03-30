@@ -84,11 +84,11 @@ async fn cmd_deploy(
     }
 
     println!("Compressing {}...", source);
-    let tarball_path = "/tmp/koda-deploy.tar.gz";
-    create_tarball(&source, tarball_path)?;
+    let tarball_path = format!("{}/koda-deploy.tar.gz", std::env::temp_dir().display());
+    create_tarball(&source, &tarball_path)?;
 
     println!("Uploading to Koda...");
-    let tarball_bytes = std::fs::read(tarball_path)?;
+    let tarball_bytes = std::fs::read(&tarball_path)?;
 
     let client = reqwest::Client::new();
     let part = reqwest::multipart::Part::bytes(tarball_bytes)
