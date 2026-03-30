@@ -134,13 +134,14 @@ fn create_tarball(source: &str, output: &str) -> Result<()> {
 
     let skip_dirs = ["node_modules", ".git", "target", ".next", ".nuxt", "dist", "__pycache__", ".venv", "venv"];
 
+    let source_path = std::path::Path::new(source).canonicalize()?;
     let tar_gz = File::create(output)?;
     let enc = GzEncoder::new(tar_gz, Compression::default());
     let mut tar = tar::Builder::new(enc);
 
-    for entry in WalkDir::new(source).into_iter().filter_map(|e| e.ok()) {
+    for entry in WalkDir::new(&source_path).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
-        
+
         // Skip unwanted directories
         if path.components().any(|c| {
             skip_dirs.contains(&c.as_os_str().to_str().unwrap_or(""))
@@ -148,13 +149,16 @@ fn create_tarball(source: &str, output: &str) -> Result<()> {
             continue;
         }
 
-        let relative = path.strip_prefix(source)?;
+        let relative = path.strip_prefix(&source_path)?;
         if relative.as_os_str().is_empty() { continue; }
 
+        // Normalize path separators to forward slashes for tar
+        let normalized = relative.to_string_lossy().replace("\\", "/");
+
         if path.is_file() {
-            tar.append_path_with_name(path, relative)?;
+            tar.append_path_with_name(path, &normalized)?;
         } else if path.is_dir() {
-            tar.append_dir(relative, path)?;
+            tar.append_dir(&normalized, path)?;
         }
     }
 
