@@ -84,8 +84,8 @@ async fn cmd_deploy(
     }
 
     println!("Compressing {}...", source);
-    let tarball_path = format!("{}/koda-deploy.tar.gz", std::env::temp_dir().display());
-    create_tarball(&source, &tarball_path)?;
+    let tarball_path = std::env::temp_dir().join("koda-deploy.tar.gz");
+    create_tarball(&source, &tarball_path).map_err(|e| anyhow::anyhow!("Failed to compress: {}", e))?;
 
     println!("Uploading to Koda...");
     let tarball_bytes = std::fs::read(&tarball_path)?;
