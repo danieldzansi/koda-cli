@@ -5,7 +5,7 @@ use clap::{Parser, Subcommand};
 use cli::auth::{handle_login, load_api_url};
 
 #[derive(Parser)]
-#[command(name = "railway-rs", version, about = "Build, deploy & manage containers from source")]
+#[command(name = "koda", version, about = "Build, deploy & manage your applications from the CLI")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -58,7 +58,7 @@ fn load_token() -> Result<String> {
     path.push("config.json");
 
     let content = std::fs::read_to_string(&path)
-        .context("Not logged in. Run `railway-rs login <email>` first.")?;
+        .context("Not logged in. Run `koda login <email>` first.")?;
 
     let config: serde_json::Value = serde_json::from_str(&content)?;
     config["token"]

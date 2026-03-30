@@ -1,4 +1,4 @@
-# railway-rs
+# koda
 
 Deploy your applications from the CLI — like Railway, but yours.
 
@@ -6,40 +6,40 @@ Deploy your applications from the CLI — like Railway, but yours.
 
 ### Linux & macOS
 ```bash
-curl -fsSL https://raw.githubusercontent.com/danieldzansi/Railway-rs-Cli/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/danieldzansi/koda-cli/master/install.sh | bash
 ```
 
 ### Windows (PowerShell — run as Administrator)
 ```powershell
-irm https://raw.githubusercontent.com/danieldzansi/Railway-rs-Cli/master/install.ps1 | iex
+irm https://raw.githubusercontent.com/danieldzansi/koda-cli/master/install.ps1 | iex
 ```
 
 ### Windows (Manual)
-1. Download `railway-rs-x86_64-windows.exe` from [Releases](https://github.com/danieldzansi/Railway-rs-Cli/releases/latest)
-2. Rename it to `railway-rs.exe`
+1. Download `koda-x86_64-windows.exe` from [Releases](https://github.com/danieldzansi/koda-cli/releases/latest)
+2. Rename it to `koda.exe`
 3. Move it to a folder in your PATH (e.g. `C:\Windows\System32`)
 
 ### Via Cargo (all platforms)
 ```bash
-cargo install railway-rs
+cargo install koda
 ```
 
 ## Getting Started
 ```bash
 # Login with your email
-railway-rs login your@email.com
+koda login your@email.com
 
 # Deploy your app
-railway-rs deploy ./my-app
+koda deploy ./my-app
 
 # View running apps
-railway-rs ps
+koda ps
 
 # View logs
-railway-rs logs <container-id>
+koda logs <container-id>
 
 # Stop an app
-railway-rs stop <container-id>
+koda stop <container-id>
 ```
 
 ## How it works
