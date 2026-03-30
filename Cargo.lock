@@ -769,6 +769,7 @@ dependencies = [
  "anyhow",
  "clap",
  "dirs",
+ "dunce",
  "flate2",
  "reqwest",
  "serde",

@@ -149,7 +149,11 @@ fn create_tarball(source: &str, output: &str) -> Result<()> {
 
     let skip_dirs = ["node_modules", ".git", "target", ".next", ".nuxt", "dist", "__pycache__", ".venv", "venv"];
 
-    let source_path = std::path::Path::new(source).canonicalize()?;
+    // On Windows, canonicalize returns UNC paths (\\?\C:\...) which break tar
+    // So we use the path as-is but convert separators
+    // dunce::canonicalize strips UNC prefix on Windows (\\?\C:\...)
+    let source_path = dunce::canonicalize(source)
+        .unwrap_or_else(|_| std::path::PathBuf::from(source));
     let tar_gz = File::create(output)?;
     let enc = GzEncoder::new(tar_gz, Compression::default());
     let mut tar = tar::Builder::new(enc);
