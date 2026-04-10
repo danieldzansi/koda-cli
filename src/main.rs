@@ -103,7 +103,16 @@ async fn cmd_deploy(
     create_tarball(&source, tarball_path.to_str().unwrap())?;
     
 
-    println!("Uploading to Koda...");
+    // Check tarball was created successfully
+    let tarball_size = std::fs::metadata(&tarball_path)
+        .map(|m| m.len())
+        .unwrap_or(0);
+    
+    if tarball_size == 0 {
+        anyhow::bail!("Failed to create tarball - file is empty. Check source path.");
+    }
+    
+    println!("Uploading to Koda... ({} KB)", tarball_size / 1024);
     let tarball_bytes = std::fs::read(&tarball_path)?;
 
     let client = reqwest::Client::new();
